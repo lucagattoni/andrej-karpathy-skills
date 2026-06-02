@@ -433,7 +433,215 @@ All five rules are covered. Use this revised version.
 
 ---
 
+## D-E Resolution
+
+**Chosen:** Two-tier precedence.
+
+**Phrasing:** "Project-specific instructions take precedence on implementation choices (libraries, patterns, style). The reasoning and communication behaviors in these rules — asking before acting, signalling uncertainty — are baselines that apply unless explicitly and intentionally overridden."
+
+**Logged:** 2026-06-02 | D-E | Two-tier precedence adopted | Prevents silent override of trust/safety behaviors by generic project instructions.
+
+---
+
+## Iteration 3 — Exact Proposed Text Changes
+
+All decisions from Iterations 1 and 2 applied. This is the complete diff specification for CLAUDE.md.
+
+---
+
+### Header
+
+**Current:**
+```
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+```
+
+**Proposed:**
+```
+Behavioral guidelines to reduce common LLM coding mistakes. In these rules, "you" refers to the AI agent.
+
+Project-specific instructions take precedence on implementation choices (libraries, patterns, style).
+The reasoning and communication behaviors in these rules — asking before acting, signalling uncertainty —
+are baselines that apply unless explicitly and intentionally overridden.
+
+**Tradeoff:** These guidelines bias toward caution over speed.
+```
+
+**Changes applied:** Q2 (pronoun clarifier), A1+D-E (two-tier precedence replaces "merge as needed"), B1 (removed "trivial tasks").
+
+---
+
+### Rule 1 — Think Before Coding
+
+**Current:**
+```
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+```
+
+**Proposed:**
+```
+Before implementing — and at any point where proceeding would be costly to undo:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them — don't pick silently.
+- If a simpler approach exists, propose it before proceeding.
+- If something is unclear, stop. Name what's confusing. Ask.
+```
+
+**Changes applied:** C1-revised (clarified as decision gate: "at any point where proceeding would be costly to undo"), "Push back when warranted" → "propose it before proceeding" (removes circular "warranted"). Dash style normalized to em-dash for consistency.
+
+---
+
+### Rule 2 — Simplicity First
+
+**Current:**
+```
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+```
+
+**Proposed:**
+```
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- Only validate at system boundaries (user input, external APIs). Trust internal code and framework contracts.
+
+If the solution introduces abstractions, new files, or new dependencies not explicitly requested, reconsider.
+```
+
+**Changes applied:** D2 (replaces "impossible scenarios" with actionable validation rule), E1 (removed 200/50 line — principle already in header), F2-tightened (replaces "senior engineer" self-check with observable criteria).
+
+---
+
+### Rule 3 — Surgical Changes
+
+**Current:**
+```
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+...
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+```
+
+**Proposed:**
+```
+**Touch only what you must. Undo only what your changes introduced.**
+
+When editing existing code:
+...
+
+When your changes create orphans:
+- Remove imports/variables/functions that your changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace to the user's request, or be a direct side effect of your
+changes (e.g., an import your changes made unused).
+```
+
+**Changes applied:** G1 ("mess" → "what your changes introduced"), I1 (YOUR → your), H1+example (test extended to cover side-effect cleanup without opening it to overuse).
+
+---
+
+### Rule 4 — Goal-Driven Execution
+
+**Current:**
+```
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+...
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+```
+
+**Proposed:**
+```
+**Define success criteria before starting. Stop when done or blocked.**
+
+Transform tasks into verifiable goals. When tests are applicable:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+When tests are not applicable, define an observable done condition before starting
+(e.g., "migration runs without errors and row count matches").
+
+For multi-step tasks, state a brief plan:
+...
+
+Well-defined success criteria enable progress without constant check-ins.
+Weak criteria ("make it work") require constant clarification.
+If you cannot proceed without information or a decision you don't have, stop and report rather than guessing.
+```
+
+**Changes applied:** J2-refined (bold updated, "blocked" defined as a specific stop state), K1+extension (TDD qualifier + non-TDD clause), L1-revised ("loop independently" → "progress without constant check-ins").
+
+---
+
+### Rule 5 — Signal Uncertainty
+
+**Current:**
+```
+When your knowledge is incomplete, a hallucination inferred, or unverified:
+- Preface responses with "possibly", "likely", "I'm not certain", or "you should verify this" — don't omit them.
+...
+When you notice you're filling a gap with an assumption:
+...
+- Offer to stop rather than guess: "I can proceed on that assumption, or you can verify first."
+```
+
+**Proposed:**
+```
+When your knowledge is incomplete, a claim is inferred rather than verified, or the answer is unverified:
+- Hedge the specific claim with "possibly", "likely", "I'm not certain", or "you should verify this."
+...
+When you notice you're filling a gap with an assumption:
+...
+- Offer to stop rather than guess (for example: "I can proceed on that assumption, or you can verify first.").
+```
+
+**Changes applied:** M1 (grammar fixed), N2 ("Preface responses" → "Hedge the specific claim"), O1 ("for example" added to prevent verbatim template use).
+
+---
+
+### Closing Summary
+
+**Current:**
+```
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+```
+
+**Proposed:**
+```
+**These guidelines are working if:** changes are minimal and targeted, success criteria are defined before coding starts, and uncertainty is named rather than hidden.
+```
+
+**Changes applied:** P2-revised (covers all 5 rules; original missed Rules 3 and 5).
+
+---
+
 ## Pending Iterations
 
-- **Iteration 3:** Resolve D-E (A1 safeguard), then produce the full set of exact proposed text changes for CLAUDE.md.
-- **Iteration 4:** Final devil's advocate consistency pass — verify no new contradictions introduced by the combined changes.
+- **Iteration 4:** Final devil's advocate consistency pass — verify the combined proposed changes introduce no new contradictions, edge cases, or rule conflicts.

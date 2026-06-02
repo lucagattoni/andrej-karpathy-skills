@@ -26,6 +26,21 @@ Five principles in one file that directly address these issues:
 | **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
 | **Signal Uncertainty** | Inferences stated as facts, silent assumptions, confidence masking gaps |
 
+## Changes from Upstream
+
+This repository is a fork of [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills). The rules were refined through an 8-iteration devil's advocate review. The full analysis, decision log, and reasoning behind every change is in [RULES_REFINEMENT.md](./RULES_REFINEMENT.md).
+
+| What changed | Summary |
+|---|---|
+| **Rule 5 added** | New rule: Signal Uncertainty — LLMs present inferences as facts; no original rule addressed this |
+| **Rule 1** | "Push back when warranted" was circular; replaced with explicit tradeoffs + simpler-approach bullets; scope extended to mid-task decision points |
+| **Rule 2** | Three instructions replaced: "impossible scenarios" (wrong semantics), 200/50 metric (arbitrary), "senior engineer" self-check (unreliable) |
+| **Rule 3** | Test was self-contradictory: required orphan cleanup two lines above, then excluded it in the test |
+| **Rule 4** | "Loop until verified" had no exit condition; TDD framing was implicit; added non-TDD clause and explicit blocked state |
+| **Header** | "You" undefined; "trivial tasks" escape hatch unconstrained; precedence between project rules and these guidelines unspecified |
+
+Details for each: [Rule 5](./RULES_REFINEMENT.md#i6-rule-5-grammar-error-preface-imprecision-verbatim-example-risk) · [Rule 1](./RULES_REFINEMENT.md#i2-rule-1--rule-5-overlap) · [Rule 2](./RULES_REFINEMENT.md#i3-rule-2-impossible-scenarios-and-arbitrary-metrics) · [Rule 3](./RULES_REFINEMENT.md#i4-rule-3-informal-language-and-test-contradiction) · [Rule 4](./RULES_REFINEMENT.md#i5-rule-4-loop-undefined-tdd-assumption-tension-with-rules-15) · [Header](./RULES_REFINEMENT.md#i1-header-conflict-resolution-and-trivial-escape-hatch)
+
 ## The Five Principles in Detail
 
 ### 1. Think Before Coding

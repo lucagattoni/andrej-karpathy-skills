@@ -30,6 +30,21 @@
 | **目标驱动执行** | 通过测试优先、可验证的成功标准 |
 | **表达不确定性** | 推断被陈述为事实、静默假设、自信掩盖知识空白 |
 
+## 相比上游的改动
+
+本仓库 fork 自 [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)。规则经过 8 轮魔鬼辩护式审查进行了精炼。完整的分析过程、决策日志和每项改动的推理见 [RULES_REFINEMENT.md](./RULES_REFINEMENT.md)（英文）。
+
+| 改动内容 | 摘要 |
+|---|---|
+| **新增规则 5** | 新规则：表达不确定性 —— LLM 常将推断陈述为事实，原版无任何规则应对此问题 |
+| **规则 1** | "适时提出异议"表述含糊；替换为明确的权衡呈现和更简方案提议；范围扩展至任务中途的决策点 |
+| **规则 2** | 替换三条存在问题的指令："不可能场景"（语义错误）、200/50 行指标（任意数字）、"资深工程师"自检（不可靠） |
+| **规则 3** | 检验标准自相矛盾：前两行要求清理孤儿代码，检验标准却将其排除在外 |
+| **规则 4** | "循环验证直到达成"无退出条件；测试优先的表述隐含且不适用于非测试任务；新增非 TDD 完成条件和遇阻停止指令 |
+| **文件头** | "你"指代不明确；"琐碎任务凭判断"是无约束的逃避条款；项目规则与通用规则之间的优先级未说明 |
+
+各项详情：[规则 5](./RULES_REFINEMENT.md#i6-rule-5-grammar-error-preface-imprecision-verbatim-example-risk) · [规则 1](./RULES_REFINEMENT.md#i2-rule-1--rule-5-overlap) · [规则 2](./RULES_REFINEMENT.md#i3-rule-2-impossible-scenarios-and-arbitrary-metrics) · [规则 3](./RULES_REFINEMENT.md#i4-rule-3-informal-language-and-test-contradiction) · [规则 4](./RULES_REFINEMENT.md#i5-rule-4-loop-undefined-tdd-assumption-tension-with-rules-15) · [文件头](./RULES_REFINEMENT.md#i1-header-conflict-resolution-and-trivial-escape-hatch)
+
 ## 五个原则详解
 
 ### 1. 编码前思考

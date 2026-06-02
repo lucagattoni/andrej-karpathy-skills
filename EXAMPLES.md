@@ -1,6 +1,6 @@
 # Examples
 
-Real-world code examples demonstrating the four principles. Each example shows what LLMs commonly do wrong and how to fix it.
+Real-world code examples demonstrating the five principles. Each example shows what LLMs commonly do wrong and how to fix it.
 
 ---
 
@@ -495,6 +495,73 @@ def sort_scores(scores):
 
 ---
 
+---
+
+## 5. Signal Uncertainty
+
+### Example 1: Inference Stated as Fact
+
+**User Request:** "Why is our API response slow?"
+
+**❌ What LLMs Do (Confident about inferences)**
+
+```
+The slowness is caused by the N+1 query in UserController.get_users().
+Each user record triggers a separate database call for their preferences.
+Fix: eager-load preferences with a JOIN.
+```
+
+**Problems:**
+- States "the cause is" without having checked logs, metrics, or profiling data
+- Prescribes a fix for an unverified diagnosis
+- A developer acting on this could spend time on the wrong problem
+
+**✅ What Should Happen (Signal the inference)**
+
+```
+Based on the code structure, a likely cause is the N+1 query in
+UserController.get_users() — each user record triggers a separate
+preference lookup. However, I haven't seen your query logs or profiling
+data, so this is an inference, not a confirmed diagnosis.
+
+I can proceed on this assumption and implement the eager-loading fix,
+or you can verify first by running EXPLAIN on the query and checking
+your slow query log.
+```
+
+### Example 2: Filling a Knowledge Gap Silently
+
+**User Request:** "Is this safe to deploy on Friday?"
+
+**❌ What LLMs Do (Silent assumptions)**
+
+```
+Yes, this looks safe to deploy. The changes are minimal and all tests pass.
+```
+
+**Problems:**
+- Doesn't know deployment environment, team coverage, or rollback procedure
+- States "safe" as a fact without flagging what it doesn't know
+- "Safe" on Friday depends entirely on context the LLM can't see
+
+**✅ What Should Happen (Name the gaps)**
+
+```
+Based on the diff, the code changes look low-risk: only affects the
+payment calculation module and all tests pass.
+
+However, I don't have visibility into:
+- Whether you have canary deployment or feature flags
+- Your rollback procedure and how quickly it can execute
+- Team availability if something goes wrong over the weekend
+
+I'm assuming you have standard rollback procedures in place. If Friday
+deployments are typically avoided at your org for ops-coverage reasons,
+that's something I can't assess from here — you should factor it in.
+```
+
+---
+
 ## Anti-Patterns Summary
 
 | Principle | Anti-Pattern | Fix |
@@ -503,6 +570,7 @@ def sort_scores(scores):
 | Simplicity First | Strategy pattern for single discount calculation | One function until complexity is actually needed |
 | Surgical Changes | Reformats quotes, adds type hints while fixing bug | Only change lines that fix the reported issue |
 | Goal-Driven | "I'll review and improve the code" | "Write test for bug X → make it pass → verify no regressions" |
+| Signal Uncertainty | "The cause is X" without profiling data | "Based on Y, I'm inferring X — verify before acting on it" |
 
 ## Key Insight
 

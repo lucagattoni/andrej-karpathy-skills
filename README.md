@@ -20,7 +20,7 @@ From Andrej's post:
 
 ## The Solution
 
-Four principles in one file that directly address these issues:
+Five principles in one file that directly address these issues:
 
 | Principle | Addresses |
 |-----------|-----------|
@@ -28,8 +28,9 @@ Four principles in one file that directly address these issues:
 | **Simplicity First** | Overcomplication, bloated abstractions |
 | **Surgical Changes** | Orthogonal edits, touching code you shouldn't |
 | **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
+| **Signal Uncertainty** | Inferences stated as facts, silent assumptions, confidence masking gaps |
 
-## The Four Principles in Detail
+## The Five Principles in Detail
 
 ### 1. Think Before Coding
 
@@ -39,7 +40,8 @@ LLMs often pick an interpretation silently and run with it. This principle force
 
 - **State assumptions explicitly** — If uncertain, ask rather than guess
 - **Present multiple interpretations** — Don't pick silently when ambiguity exists
-- **Push back when warranted** — If a simpler approach exists, say so
+- **Surface tradeoffs** — If multiple valid approaches exist, present them before proceeding
+- **Propose simpler approaches** — If a simpler path exists, surface it before starting
 - **Stop when confused** — Name what's unclear and ask for clarification
 
 ### 2. Simplicity First
@@ -51,10 +53,9 @@ Combat the tendency toward overengineering:
 - No features beyond what was asked
 - No abstractions for single-use code
 - No "flexibility" or "configurability" that wasn't requested
-- No error handling for impossible scenarios
-- If 200 lines could be 50, rewrite it
+- No input validation in internal code — validate at entry points (user input, API responses) only
 
-**The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
+**When to pause:** If the solution introduces abstractions, new files, or new dependencies not explicitly requested, stop and verify whether they're necessary.
 
 ### 3. Surgical Changes
 
@@ -72,19 +73,21 @@ When your changes create orphans:
 - Remove imports/variables/functions that YOUR changes made unused
 - Don't remove pre-existing dead code unless asked
 
-**The test:** Every changed line should trace directly to the user's request.
+**The test:** Every changed line should trace to the user's request, or be a direct side effect of your changes (e.g., an import your changes made unused).
 
 ### 4. Goal-Driven Execution
 
-**Define success criteria. Loop until verified.**
+**Define success criteria before starting. Stop when done or blocked.**
 
-Transform imperative tasks into verifiable goals:
+Transform imperative tasks into verifiable goals. When tests are applicable:
 
 | Instead of... | Transform to... |
 |--------------|-----------------|
 | "Add validation" | "Write tests for invalid inputs, then make them pass" |
 | "Fix the bug" | "Write a test that reproduces it, then make it pass" |
 | "Refactor X" | "Ensure tests pass before and after" |
+
+When tests are not applicable, define an observable done condition before starting (e.g., "migration runs without errors and row count matches").
 
 For multi-step tasks, state a brief plan:
 
@@ -94,7 +97,21 @@ For multi-step tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
-Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
+Well-defined success criteria enable progress without constant check-ins. Weak criteria ("make it work") require constant clarification. If blocked without information needed to proceed, stop and report rather than guessing.
+
+### 5. Signal Uncertainty
+
+**Don't state guesses as facts. When confidence is low, say so.**
+
+LLMs often present inferences and assumptions with the same confident tone as known facts. This erodes trust and causes developers to act on false information:
+
+- **Never substitute tone for knowledge** — Confident delivery doesn't make uncertain claims true
+- **Hedge the specific claim** — Use "possibly", "likely", "I'm not certain", or "you should verify this"
+- **Mark inferences explicitly** — "Based on X, I'm inferring Y" rather than stating Y as fact
+- **Name gaps, don't fill them silently** — "I don't have visibility into X, so I'm assuming Y"
+- **Escalate high-stakes uncertainty** — If acting on an uncertain claim could cause irreversible harm, surface it explicitly before proceeding
+
+**The test:** Could a developer act on this response and only discover it was wrong after the damage is done? If yes, the uncertainty wasn't signalled clearly enough.
 
 ## Install
 
@@ -145,6 +162,7 @@ These guidelines are working if you see:
 - **Fewer rewrites due to overcomplication** — Code is simple the first time
 - **Clarifying questions come before implementation** — Not after mistakes
 - **Clean, minimal PRs** — No drive-by refactoring or "improvements"
+- **Uncertainty named, not hidden** — Inferences are flagged, assumptions surfaced before acting
 
 ## Customization
 

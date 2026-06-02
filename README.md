@@ -139,7 +139,9 @@ curl -o ~/.claude/commands/karpathy_rules_add.md \
 Then run `/karpathy_rules_add` inside any project. It will:
 1. Pull the latest rules from this repo
 2. Merge them into the project's `CLAUDE.md`, resolving any conflicts with existing rules
-3. If the project already has source code, ask whether you want a full code review against the new guidelines
+3. If the project has existing tracked files, ask whether you want a full code review against the new guidelines
+
+**To refresh the command** (e.g. after pulling a newer version of the file): no restart needed — changes to `~/.claude/commands/` take effect immediately in Claude Code and Claude Desktop. If you're installing the directory for the first time, restart once.
 
 **Option B: Claude Code Plugin**
 

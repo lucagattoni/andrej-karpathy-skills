@@ -139,7 +139,9 @@ curl -o ~/.claude/commands/karpathy_rules_add.md \
 然后在任意项目中运行 `/karpathy_rules_add`，它会：
 1. 从本仓库拉取最新规则
 2. 将规则合并到项目的 `CLAUDE.md` 中，自动解决与已有规则的冲突
-3. 如果项目已有源代码，询问是否需要对照新规则进行完整代码审查
+3. 如果项目已有被追踪的文件，询问是否需要对照新规则进行完整代码审查
+
+**刷新命令**（例如拉取新版本后）：无需重启 —— 对 `~/.claude/commands/` 的改动在 Claude Code 和 Claude Desktop 中立即生效。如果是首次创建该目录，重启一次即可。
 
 **选项 B：Claude Code 插件**
 

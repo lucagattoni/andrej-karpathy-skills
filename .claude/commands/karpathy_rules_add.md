@@ -32,11 +32,12 @@ Apply the correct case:
 
 ## Step 4 — Offer a code review for pre-existing projects
 
-Run:
+Check whether this project already has tracked files beyond CLAUDE.md:
+
 ```bash
-find . -type f \( -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.py" -o -name "*.go" -o -name "*.rs" -o -name "*.java" -o -name "*.rb" -o -name "*.cpp" -o -name "*.c" -o -name "*.swift" -o -name "*.kt" -o -name "*.cs" \) -not -path "*/node_modules/*" -not -path "*/.git/*" -not -path "*/dist/*" -not -path "*/build/*" -not -path "*/.next/*" | head -1
+git ls-files | grep -v "^CLAUDE.md$" | head -1
 ```
 
-If any source files are found, ask the user:
+If any files are found, ask the user:
 
 > "Would you like a full code review against the new guidelines?"

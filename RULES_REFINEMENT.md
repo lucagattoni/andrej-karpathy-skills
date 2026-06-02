@@ -870,6 +870,116 @@ The test example ("an import your changes made unused") repeats the bullet above
 
 ---
 
+## Iteration 6 — Pass on Post-Iteration-5 Document
+
+---
+
+### I6-1. Rule 5 fourth bullet — circular with the trigger condition
+
+**Current trigger:** `"When... a claim is inferred rather than known, or a fact needs external verification:"`
+
+**Current fourth bullet:** `"If a claim requires external verification before acting on it, flag that explicitly."`
+
+The trigger already tells us we're in an "external verification needed" scenario. The fourth bullet then says: if that scenario is true, flag it. This is a tautology — the trigger defines the scope, and the bullet just restates the trigger's scope as a behavior.
+
+The bullet's only real contribution over the first bullet is the phrase "before acting on it" — escalating urgency for high-stakes claims. But that nuance is lost because the overall phrasing looks redundant.
+
+**Proposed fix:** Rewrite the fourth bullet to differentiate clearly from the first by targeting high-stakes cases specifically:
+
+`"If acting on an uncertain claim could cause irreversible harm, surface that uncertainty explicitly before proceeding."`
+
+This:
+- Carves out the HIGH-STAKES sub-case (acting on uncertainty with irreversible consequences)
+- Is not redundant with the trigger (trigger covers all uncertain claims; this bullet covers the high-stakes subset)
+- Complements bullet 1 (hedge language) with an escalation (explicit surfacing before proceeding)
+
+**Devil's advocate on the rewrite:** "irreversible harm" requires the agent to judge what is irreversible. This is the same issue as "costly to undo" in Rule 1. But in Rule 1 we accepted "costly to undo" — accept the same phrasing class here.
+
+**Devil's advocate on whether this belongs in Rule 5 at all:** This overlaps with Rule 1 ("at any point where proceeding would be costly to undo, stop and ask"). The HIGH-STAKES + UNCERTAINTY + ABOUT-TO-ACT case is the intersection of Rules 1 and 5. Having it in Rule 5 is a natural place — Rule 5 is about how to handle uncertainty in output, and this is an output behavior. Accept.
+
+---
+
+### I6-2. Rule 3 subtitle — "Undo" is the wrong verb
+
+**Current:** `"Touch only what you must. Undo only what your changes introduced."`
+
+"Undo" means reversing or cancelling something. But the instruction is about cleaning up side effects (like orphaned imports) — not reversing anything. An import that YOUR change made unused was not "introduced" by you; it was already there. You made it obsolete.
+
+"Undo only what your changes introduced" is doubly wrong: "undo" (wrong action), "introduced" (wrong subject — you didn't introduce the orphaned import; you made it unnecessary).
+
+**Proposed fix:** `"Clean up only what your changes left behind."`
+
+- "clean up" = neutral side-effect removal
+- "left behind" = the residue of your actions (orphaned imports, unused variables)
+- Idiomatic, concise, correct
+
+**Devil's advocate:** "left behind" could sound like code you left unfinished. Counter: in context ("when your changes create orphans") the meaning is clear. Accept.
+
+---
+
+### I6-3. Rule 1 bold header — "Surface tradeoffs" has no matching bullet
+
+**Current bold header:** `"Don't assume. Don't hide confusion. Surface tradeoffs."`
+
+**Current bullets:**
+1. State assumptions. If uncertain, ask.
+2. If multiple **interpretations** exist, present them.
+3. If a simpler approach exists, propose it.
+4. If unclear, stop and ask.
+
+"Surface tradeoffs" means: when multiple valid implementation approaches exist with different consequences, present them rather than silently picking one. This is distinct from bullet 2 ("multiple interpretations" = ambiguity about what the user WANTS) and bullet 3 ("simpler approach" = one option is clearly better).
+
+The trade-offs case: two reasonable, equivalently-valid solutions with different costs (e.g., in-memory vs. database; sync vs. async). Neither is "simpler" — they have different trade-offs. No current bullet covers this.
+
+**Proposed fix:** Add a bullet:
+`"If multiple valid approaches exist with different trade-offs, surface them before proceeding."`
+
+**Devil's advocate:** This adds length and may partially overlap with bullet 2 (interpretations). Counter: interpretations are about WHAT to build; approaches are about HOW to build it. The distinction matters — you can have a perfectly clear spec and still face meaningful architectural trade-offs. The bullet is warranted.
+
+**Placement:** After bullet 2 (present interpretations), before bullet 3 (propose simpler) — this preserves a logical flow: spec clarity → approach options → simplicity preference → ask when stuck.
+
+---
+
+### I6-4. Rule 5 third bullet — "Distinguish between what you know and what you're inferring"
+
+**Current:** `"Distinguish between what you know and what you're inferring."`
+
+This bullet is a restatement of the trigger condition, not a behavioral instruction. The trigger already sets up the scenario where inference is happening. The bullet says "distinguish" — but distinguish HOW? In what form? For an AI agent this is too abstract.
+
+**Proposed fix:** Make it behavioral: `"When you state an inference, mark it as such: 'based on X, I'm inferring Y' rather than stating Y as fact."`
+
+**Devil's advocate:** This is a concrete instruction but it's essentially the same as bullet 1 ("hedge the specific claim"). The difference: bullet 1 gives hedge vocabulary; this bullet gives the structure (source → inference). Are both needed?
+
+Decision: They address different aspects: vocabulary (hedge words) vs. structure (showing your reasoning chain). Both are useful for an agent. Keep both, but the current third bullet ("distinguish...") is too vague. Adopt the rewrite.
+
+**However:** the rewrite makes the bullet significantly longer and more prescriptive. This might make Rule 5 the heaviest rule in the document.
+
+**Counter-consideration:** Length is acceptable if it prevents a real failure mode. Stating inferences as facts without showing the chain is a common AI issue. The rewrite is warranted.
+
+---
+
+## Iteration 6 — Summary of Changes
+
+| # | Location | Change |
+|---|----------|--------|
+| I6-1 | Rule 5 fourth bullet | Rewrite: "If acting on an uncertain claim could cause irreversible harm, surface that uncertainty explicitly before proceeding." |
+| I6-2 | Rule 3 subtitle | "Undo only what your changes introduced" → "Clean up only what your changes left behind" |
+| I6-3 | Rule 1 bullets | Add after bullet 2: "If multiple valid approaches exist with different trade-offs, surface them before proceeding." |
+| I6-4 | Rule 5 third bullet | Rewrite: "When you state an inference, mark it as such: 'based on X, I'm inferring Y' rather than stating Y as fact." |
+
+---
+
+## Decisions Log Addition (Iteration 6)
+
+| Date | Issue | Decision | Rationale |
+|------|-------|----------|-----------|
+| 2026-06-02 | I6-1 (Rule 5 bullet 4) | Rewrite to high-stakes escalation | Removes circular tautology; adds genuine value for irreversible-harm cases |
+| 2026-06-02 | I6-2 (Rule 3 subtitle) | "Clean up only what your changes left behind" | "Undo" and "introduced" are both wrong verbs for the intended behavior |
+| 2026-06-02 | I6-3 (Rule 1 trade-offs bullet) | Add bullet after bullet 2 | "Surface tradeoffs" in bold header had no matching behavior in the bullets |
+| 2026-06-02 | I6-4 (Rule 5 bullet 3) | Rewrite as behavioral instruction with structure | "Distinguish" is too abstract; showing the inference chain is the concrete behavior |
+
+---
+
 ## Pending Iterations
 
-- **Iteration 6:** Apply Iteration 5 changes to CLAUDE.md, then do a final devil's advocate pass on the result.
+- **Iteration 7:** Apply Iteration 6 changes to CLAUDE.md, then do a final devil's advocate pass.

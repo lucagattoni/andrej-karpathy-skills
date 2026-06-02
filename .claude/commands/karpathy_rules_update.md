@@ -16,9 +16,13 @@ cat ~/.claude/CLAUDE.md 2>/dev/null
 
 **File does not exist or is empty:** write the incoming rules to ~/.claude/CLAUDE.md.
 
-**File contains "Behavioral guidelines to reduce common LLM coding mistakes"** (Karpathy rules present): replace the Karpathy block — everything from the first line of the file to the first `---` separator, or the whole file if no separator exists — with the incoming rules. Preserve any content below the separator unchanged.
+**File contains "Behavioral guidelines to reduce common LLM coding mistakes"** (Karpathy rules present): back up the file first, then replace the Karpathy block — everything from the first line of the file to the first `---` separator, or the whole file if no separator exists — with the incoming rules. Preserve any content below the separator unchanged.
 
-**File exists but has no Karpathy rules:** prepend the incoming rules at the top, preserve the existing content below.
+```bash
+[ -f ~/.claude/CLAUDE.md ] && cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE-$(date +%Y%m%d).md.bkp
+```
+
+**File exists but has no Karpathy rules:** back up the file first (same command above), then prepend the incoming rules at the top, preserve the existing content below.
 
 Confirm: "Karpathy rules updated in ~/.claude/CLAUDE.md." Summarise what changed if there were pre-existing rules.
 
@@ -30,7 +34,7 @@ Check whether a project-level CLAUDE.md exists in the current directory:
 cat ./CLAUDE.md 2>/dev/null
 ```
 
-If the file exists, ask: "A project CLAUDE.md was found. Update the Karpathy rules there too?"
+If the file exists, ask: "A project CLAUDE.md was found. Add or update the Karpathy rules there too?"
 
 If yes:
 

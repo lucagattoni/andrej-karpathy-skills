@@ -2,8 +2,6 @@
 
 A single `CLAUDE.md` file to improve Claude Code behavior, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
-English | [简体中文](./README.zh.md)
-
 ## The Problems
 
 From Andrej's post:
@@ -32,14 +30,14 @@ This repository is a fork of [multica-ai/andrej-karpathy-skills](https://github.
 
 | What changed | Summary |
 |---|---|
-| **Rule 5 added** | New rule: Signal Uncertainty — LLMs present inferences as facts; no original rule addressed this |
+| **Header** | "You" undefined; "trivial tasks" escape hatch unconstrained; precedence between project rules and these guidelines unspecified |
 | **Rule 1** | "Push back when warranted" was circular; replaced with explicit tradeoffs + simpler-approach bullets; scope extended to mid-task decision points |
 | **Rule 2** | Three instructions replaced: "impossible scenarios" (wrong semantics), 200/50 metric (arbitrary), "senior engineer" self-check (unreliable) |
 | **Rule 3** | Test was self-contradictory: required orphan cleanup two lines above, then excluded it in the test |
 | **Rule 4** | "Loop until verified" had no exit condition; TDD framing was implicit; added non-TDD clause and explicit blocked state |
-| **Header** | "You" undefined; "trivial tasks" escape hatch unconstrained; precedence between project rules and these guidelines unspecified |
+| **Rule 5 added** | New rule: Signal Uncertainty — LLMs present inferences as facts; no original rule addressed this |
 
-Details for each: [Rule 5](./RULES_REFINEMENT.md#i6-rule-5-grammar-error-preface-imprecision-verbatim-example-risk) · [Rule 1](./RULES_REFINEMENT.md#i2-rule-1--rule-5-overlap) · [Rule 2](./RULES_REFINEMENT.md#i3-rule-2-impossible-scenarios-and-arbitrary-metrics) · [Rule 3](./RULES_REFINEMENT.md#i4-rule-3-informal-language-and-test-contradiction) · [Rule 4](./RULES_REFINEMENT.md#i5-rule-4-loop-undefined-tdd-assumption-tension-with-rules-15) · [Header](./RULES_REFINEMENT.md#i1-header-conflict-resolution-and-trivial-escape-hatch)
+Details for each: [Header](./RULES_REFINEMENT.md#i1-header-conflict-resolution-and-trivial-escape-hatch) · [Rule 1](./RULES_REFINEMENT.md#i2-rule-1--rule-5-overlap) · [Rule 2](./RULES_REFINEMENT.md#i3-rule-2-impossible-scenarios-and-arbitrary-metrics) · [Rule 3](./RULES_REFINEMENT.md#i4-rule-3-informal-language-and-test-contradiction) · [Rule 4](./RULES_REFINEMENT.md#i5-rule-4-loop-undefined-tdd-assumption-tension-with-rules-15) · [Rule 5](./RULES_REFINEMENT.md#i6-rule-5-grammar-error-preface-imprecision-verbatim-example-risk)
 
 ## The Five Principles in Detail
 
@@ -124,38 +122,47 @@ LLMs often present inferences and assumptions with the same confident tone as kn
 
 **The test:** Could a developer act on this response and only discover it was wrong after the damage is done? If yes, the uncertainty wasn't signalled clearly enough.
 
+See [EXAMPLES.md](./EXAMPLES.md) for annotated before/after code examples for each principle.
+
 ## Install
 
-**Option A: Global slash command (recommended)**
-
-Installs `/karpathy_rules_add` as a global Claude Code command, available in any project:
+**Option A: Script (recommended)**
 
 ```bash
-mkdir -p ~/.claude/commands
-curl -o ~/.claude/commands/karpathy_rules_add.md \
-  https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/karpathy_rules_add.md
+curl -s https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/install.sh | bash
 ```
 
-Then run `/karpathy_rules_add` inside any project. It will:
-1. Pull the latest rules from this repo
-2. Merge them into the project's `CLAUDE.md`, resolving any conflicts with existing rules
-3. If the project has existing tracked files, ask whether you want a full code review against the new guidelines
+Or if you've cloned the repo:
 
-**To refresh the command** (e.g. after pulling a newer version of the file): no restart needed — changes to `~/.claude/commands/` take effect immediately in Claude Code and Claude Desktop. If you're installing the directory for the first time, restart once.
-
-**Option B: Claude Code Plugin**
-
-From within Claude Code, first add the marketplace:
-```
-/plugin marketplace add lucagattoni/andrej-karpathy-skills
+```bash
+make install_commands
+# or: bash install.sh
 ```
 
-Then install the plugin:
-```
-/plugin install andrej-karpathy-skills@karpathy-skills
+To remove the commands later:
+
+```bash
+make uninstall_commands
 ```
 
-**Option C: CLAUDE.md (per-project, manual)**
+This installs four commands into `~/.claude/commands/`. No restart needed — they're available immediately in Claude Code and Claude Desktop.
+
+**Commands**
+
+| Command | What it does |
+|---|---|
+| `/karpathy_rules_install_local` | Installs rules into `~/.claude/CLAUDE.md` (applies to all projects). Also installs all four commands globally. |
+| `/karpathy_rules_install_repo` | Installs rules into the current project's `CLAUDE.md`. Also installs all four commands into `.claude/commands/`. |
+| `/karpathy_rules_update` | Updates `~/.claude/CLAUDE.md` with the latest rules from this repo, preserving any local additions. |
+| `/karpathy_rules_check` | Reviews the current project's code against the guidelines and reports findings by rule. |
+
+Both install commands detect existing rules and offer to update them instead of overwriting. After a first install on a project with existing code, they offer to run `/karpathy_rules_check`.
+
+**Refreshing commands after an update**
+
+Changes to `~/.claude/commands/` take effect immediately — no restart needed (except when creating the directory for the first time).
+
+**Option B: CLAUDE.md (per-project, manual)**
 
 New project:
 ```bash

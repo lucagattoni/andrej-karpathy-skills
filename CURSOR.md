@@ -20,7 +20,7 @@ If you want the same content as a reusable skill under `~/.cursor/skills`, use [
 
 ## Claude Code vs Cursor
 
-- **Claude Code:** Install via the plugin marketplace and [`README.md`](README.md) instructions; the plugin exposes the skill from this repo. Per-project use can also rely on `CLAUDE.md`.
+- **Claude Code:** Install via `install.sh` or `make install` (see [`README.md`](README.md)). Per-project use can also rely on `CLAUDE.md`.
 - **Cursor:** Use the committed `.cursor/rules/` file as described above. Cursor does not read `.claude-plugin/` or `CLAUDE.md` by default.
 
 ## For contributors

@@ -84,6 +84,6 @@ When you notice you're filling a gap with an assumption:
 
 The test: Could a developer act on this response and only discover it was wrong after the damage is done? If yes, the uncertainty wasn't signalled clearly enough.
 
----
-
 **These guidelines are working if:** changes are minimal and targeted, success criteria are defined before coding starts, and uncertainty is named rather than hidden.
+
+---

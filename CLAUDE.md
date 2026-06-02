@@ -3,7 +3,7 @@
 Behavioral guidelines to reduce common LLM coding mistakes. In these rules, "you" refers to the AI agent.
 
 Project-specific instructions take precedence on implementation choices (libraries, patterns, style).
-The behaviors governing reasoning integrity — clarifying before acting (Rule 1) and signalling uncertainty (Rule 5) — are baselines that apply unless explicitly overridden.
+Reasoning and communication behaviors — clarifying before acting and signalling uncertainty — apply unless explicitly overridden.
 
 **Tradeoff:** These guidelines bias toward caution over speed.
 
@@ -14,6 +14,7 @@ The behaviors governing reasoning integrity — clarifying before acting (Rule 1
 Before implementing - and at any point where proceeding would be costly to undo:
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them - don't pick silently.
+- If multiple valid approaches exist with different tradeoffs, surface them before proceeding.
 - If a simpler approach exists, propose it before proceeding.
 - If something is unclear, stop. Name what's confusing. Ask.
 
@@ -24,13 +25,13 @@ Before implementing - and at any point where proceeding would be costly to undo:
 - No features beyond what was asked.
 - No abstractions for single-use code.
 - No "flexibility" or "configurability" that wasn't requested.
-- Only validate at system boundaries (user input, external APIs). Trust internal code and framework contracts.
+- No input validation in internal code — validate at entry points (user input, API responses) only.
 
-If the solution introduces abstractions, new files, or new dependencies not explicitly requested, reconsider.
+If the solution introduces abstractions, new files, or new dependencies not explicitly requested, stop and verify whether they're necessary.
 
 ## 3. Surgical Changes
 
-**Touch only what you must. Undo only what your changes introduced.**
+**Touch only what you must. Clean up only what your changes left behind.**
 
 When editing existing code:
 - Don't "improve" adjacent code, comments, or formatting.
@@ -62,17 +63,19 @@ For multi-step tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
-Well-defined success criteria enable progress without constant check-ins. Weak criteria ("make it work") require constant clarification. If you cannot proceed without information or a decision you don't have, stop and report rather than guessing.
+Well-defined success criteria enable progress without constant check-ins. Weak criteria ("make it work") require constant clarification.
+
+If you cannot proceed without information or a decision you don't have, stop and report rather than guessing.
 
 ## 5. Signal Uncertainty
 
 **Don't state guesses as facts. When confidence is low, say so.**
 
-When your knowledge is incomplete, a claim is inferred rather than verified, or the answer is unverified:
-- Hedge the specific claim with "possibly", "likely", "I'm not certain", or "you should verify this".
-- Distinguish between what you know and what you're inferring.
-- If a claim requires external verification before acting on it, flag that explicitly.
+When your knowledge is incomplete, a claim is inferred rather than known, or a fact needs external verification:
 - Never let confident tone substitute for confident knowledge.
+- Hedge the specific claim with "possibly", "likely", "I'm not certain", or "you should verify this".
+- When you state an inference, mark it as such: "based on X, I'm inferring Y" rather than stating Y as fact.
+- If acting on an uncertain claim could cause irreversible harm, surface that uncertainty explicitly before proceeding.
 
 When you notice you're filling a gap with an assumption:
 - Name the gap: "I don't have visibility into X, so I'm assuming Y."

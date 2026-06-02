@@ -126,22 +126,28 @@ LLMs often present inferences and assumptions with the same confident tone as kn
 
 ## Install
 
-**Option A: Global slash command (recommended)**
-
-Installs `/karpathy_rules_add` as a global Claude Code command, available in any project:
+**Bootstrap (run once to get the commands)**
 
 ```bash
-mkdir -p ~/.claude/commands
-curl -o ~/.claude/commands/karpathy_rules_add.md \
-  https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/karpathy_rules_add.md
+mkdir -p ~/.claude/commands && for cmd in karpathy_rules_install_local karpathy_rules_install_repo karpathy_rules_update karpathy_rules_check; do curl -s -o ~/.claude/commands/${cmd}.md https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/${cmd}.md; done
 ```
 
-Then run `/karpathy_rules_add` inside any project. It will:
-1. Pull the latest rules from this repo
-2. Merge them into the project's `CLAUDE.md`, resolving any conflicts with existing rules
-3. If the project has existing tracked files, ask whether you want a full code review against the new guidelines
+This downloads all four commands globally. No restart needed — they're available immediately in Claude Code and Claude Desktop.
 
-**To refresh the command** (e.g. after pulling a newer version of the file): no restart needed — changes to `~/.claude/commands/` take effect immediately in Claude Code and Claude Desktop. If you're installing the directory for the first time, restart once.
+**Commands**
+
+| Command | What it does |
+|---|---|
+| `/karpathy_rules_install_local` | Installs rules into `~/.claude/CLAUDE.md` (applies to all projects). Also installs all four commands globally. |
+| `/karpathy_rules_install_repo` | Installs rules into the current project's `CLAUDE.md`. Also installs all four commands into `.claude/commands/`. |
+| `/karpathy_rules_update` | Updates `~/.claude/CLAUDE.md` with the latest rules from this repo, preserving any local additions. |
+| `/karpathy_rules_check` | Reviews the current project's code against the guidelines and reports findings by rule. |
+
+Both install commands detect existing rules and offer to update them instead of overwriting. After a first install on a project with existing code, they offer to run `/karpathy_rules_check`.
+
+**Refreshing commands after an update**
+
+Changes to `~/.claude/commands/` take effect immediately — no restart needed (except when creating the directory for the first time).
 
 **Option B: Claude Code Plugin**
 

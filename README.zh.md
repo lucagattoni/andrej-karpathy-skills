@@ -126,22 +126,28 @@ LLM 常常以与已知事实相同的自信语气呈现推断和假设，这会�
 
 ## 安装
 
-**选项 A：全局斜杠命令（推荐）**
-
-将 `/karpathy_rules_add` 安装为全局 Claude Code 命令，可在任意项目中使用：
+**初始引导（运行一次，获取所有命令）**
 
 ```bash
-mkdir -p ~/.claude/commands
-curl -o ~/.claude/commands/karpathy_rules_add.md \
-  https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/karpathy_rules_add.md
+mkdir -p ~/.claude/commands && for cmd in karpathy_rules_install_local karpathy_rules_install_repo karpathy_rules_update karpathy_rules_check; do curl -s -o ~/.claude/commands/${cmd}.md https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/${cmd}.md; done
 ```
 
-然后在任意项目中运行 `/karpathy_rules_add`，它会：
-1. 从本仓库拉取最新规则
-2. 将规则合并到项目的 `CLAUDE.md` 中，自动解决与已有规则的冲突
-3. 如果项目已有被追踪的文件，询问是否需要对照新规则进行完整代码审查
+这会将四个命令全部下载到全局目录。无需重启 —— 在 Claude Code 和 Claude Desktop 中立即生效。
 
-**刷新命令**（例如拉取新版本后）：无需重启 —— 对 `~/.claude/commands/` 的改动在 Claude Code 和 Claude Desktop 中立即生效。如果是首次创建该目录，重启一次即可。
+**命令说明**
+
+| 命令 | 功能 |
+|---|---|
+| `/karpathy_rules_install_local` | 将规则安装到 `~/.claude/CLAUDE.md`（对所有项目生效），同时全局安装四个命令。 |
+| `/karpathy_rules_install_repo` | 将规则安装到当前项目的 `CLAUDE.md`，同时将四个命令安装到 `.claude/commands/`。 |
+| `/karpathy_rules_update` | 从本仓库拉取最新规则，更新 `~/.claude/CLAUDE.md`，保留本地添加内容。 |
+| `/karpathy_rules_check` | 对照规则审查当前项目代码，按规则分类报告问题。 |
+
+两个安装命令都会检测已有规则，并在规则已存在时提供更新选项而非直接覆盖。在有已有代码的项目上首次安装后，会询问是否运行 `/karpathy_rules_check`。
+
+**更新命令后刷新**
+
+对 `~/.claude/commands/` 的改动立即生效，无需重启（首次创建该目录时需重启一次）。
 
 **选项 B：Claude Code 插件**
 

@@ -126,7 +126,22 @@ LLM 常常以与已知事实相同的自信语气呈现推断和假设，这会�
 
 ## 安装
 
-**选项 A：Claude Code 插件（推荐）**
+**选项 A：全局斜杠命令（推荐）**
+
+将 `/karpathy_rules_add` 安装为全局 Claude Code 命令，可在任意项目中使用：
+
+```bash
+mkdir -p ~/.claude/commands
+curl -o ~/.claude/commands/karpathy_rules_add.md \
+  https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/karpathy_rules_add.md
+```
+
+然后在任意项目中运行 `/karpathy_rules_add`，它会：
+1. 从本仓库拉取最新规则
+2. 将规则合并到项目的 `CLAUDE.md` 中，自动解决与已有规则的冲突
+3. 如果项目已有源代码，询问是否需要对照新规则进行完整代码审查
+
+**选项 B：Claude Code 插件**
 
 在 Claude Code 中，首先添加插件市场：
 ```
@@ -138,9 +153,7 @@ LLM 常常以与已知事实相同的自信语气呈现推断和假设，这会�
 /plugin install andrej-karpathy-skills@karpathy-skills
 ```
 
-这会将指南安装为 Claude Code 插件，使其在你所有项目中可用。
-
-**选项 B：CLAUDE.md（按项目）**
+**选项 C：CLAUDE.md（按项目，手动）**
 
 新项目：
 ```bash

@@ -126,7 +126,22 @@ LLMs often present inferences and assumptions with the same confident tone as kn
 
 ## Install
 
-**Option A: Claude Code Plugin (recommended)**
+**Option A: Global slash command (recommended)**
+
+Installs `/karpathy_rules_add` as a global Claude Code command, available in any project:
+
+```bash
+mkdir -p ~/.claude/commands
+curl -o ~/.claude/commands/karpathy_rules_add.md \
+  https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/karpathy_rules_add.md
+```
+
+Then run `/karpathy_rules_add` inside any project. It will:
+1. Pull the latest rules from this repo
+2. Merge them into the project's `CLAUDE.md`, resolving any conflicts with existing rules
+3. If the project already has source code, ask whether you want a full code review against the new guidelines
+
+**Option B: Claude Code Plugin**
 
 From within Claude Code, first add the marketplace:
 ```
@@ -138,9 +153,7 @@ Then install the plugin:
 /plugin install andrej-karpathy-skills@karpathy-skills
 ```
 
-This installs the guidelines as a Claude Code plugin, making the skill available across all your projects.
-
-**Option B: CLAUDE.md (per-project)**
+**Option C: CLAUDE.md (per-project, manual)**
 
 New project:
 ```bash

@@ -70,7 +70,7 @@ Combat the tendency toward overengineering:
 
 ### 3. Surgical Changes
 
-**Touch only what you must. Clean up only your own mess.**
+**Touch only what you must. Clean up only what your changes left behind.**
 
 When editing existing code:
 
@@ -81,7 +81,7 @@ When editing existing code:
 
 When your changes create orphans:
 
-- Remove imports/variables/functions that YOUR changes made unused
+- Remove imports/variables/functions that your changes made unused
 - Don't remove pre-existing dead code unless asked
 
 **The test:** Every changed line should trace to the user's request, or be a direct side effect of your changes (e.g., an import your changes made unused).
@@ -177,7 +177,9 @@ These guidelines are working if you see:
 
 ## Customization
 
-These guidelines are designed to be merged with project-specific instructions. Add them to your existing `CLAUDE.md` or create a new one.
+These guidelines are designed to be combined with project-specific instructions. Project-specific rules take precedence on implementation choices (libraries, patterns, style). The reasoning and communication behaviors — clarifying before acting and signalling uncertainty — are protected baselines that apply unless explicitly overridden.
+
+Add them to your existing `CLAUDE.md` or create a new one.
 
 For project-specific rules, add sections like:
 

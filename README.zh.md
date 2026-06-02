@@ -1,9 +1,5 @@
 # 受 Karpathy 启发的 Claude Code 指南
 
-> 查看我的新项目 [Multica](https://github.com/multica-ai/multica) —— 一个用于运行和管理编码智能体的开源平台，支持可复用的技能。
->
-> 在 X 上关注我：[https://x.com/jiayuan_jy](https://x.com/jiayuan_jy)
-
 一个单一的 `CLAUDE.md` 文件，用于改善 Claude Code 的行为，源自 [Andrej Karpathy 的观察](https://x.com/karpathy/status/2015883857489522876) 关于 LLM 编码陷阱的总结。
 
 [English](./README.md) | 简体中文
@@ -74,7 +70,7 @@ LLM 经常默默选择一种解释然后执行。这个原则强制明确推理�
 
 ### 3. 精准修改
 
-**只碰必须碰的。只清理自己造成的混乱。**
+**只碰必须碰的。只清理你的改动留下的痕迹。**
 
 编辑现有代码时：
 
@@ -181,7 +177,9 @@ curl https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/C
 
 ## 定制
 
-这些指南设计用于与项目特定指令合并。将它们添加到你现有的 `CLAUDE.md` 或创建一个新的。
+这些指南设计用于与项目特定指令结合使用。项目特定规则在实现选择（库、模式、风格）上具有优先权。推理与沟通行为 —— 行动前澄清和表达不确定性 —— 是受保护的基线，除非被明确覆盖。
+
+将它们添加到你现有的 `CLAUDE.md` 或创建一个新的。
 
 对于项目特定规则，添加如下章节：
 

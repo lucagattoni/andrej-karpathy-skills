@@ -135,8 +135,14 @@ curl -s https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/mai
 Or if you've cloned the repo:
 
 ```bash
-make install
+make install_commands
 # or: bash install.sh
+```
+
+To remove the commands later:
+
+```bash
+make uninstall_commands
 ```
 
 This installs four commands into `~/.claude/commands/`. No restart needed — they're available immediately in Claude Code and Claude Desktop.

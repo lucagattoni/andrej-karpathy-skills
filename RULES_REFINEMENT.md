@@ -1089,6 +1089,109 @@ The remaining issues are structural-cosmetic rather than logical. The document i
 
 ---
 
-## Pending Iterations
+## Iteration 8 — Convergence Check
 
-- **Iteration 8:** Apply Iteration 7 changes to CLAUDE.md. If no new logical issues found, declare convergence.
+---
+
+### I8-1. Rule 2 bullet 4 — "No error handling for internal code" is too broad
+
+**Current:** `"No error handling for internal code — only validate at system boundaries (user input, external APIs)."`
+
+The I7-2 rewrite fixed the list-pattern problem but introduced a semantic error. "No error handling for internal code" is too broad: it could prohibit legitimate internal error handling — catching exceptions from third-party libraries, handling business logic errors (account overdraft, resource not found), or any try/catch inside the codebase.
+
+The actual intent is narrower: don't duplicate input validation that was already done at the system boundary. Internal code should trust that its callers have already validated inputs.
+
+**Proposed fix:** `"No input validation in internal code — validate at entry points (user input, API responses) only."`
+
+Differences:
+- "input validation" (not "error handling") — targets only the duplication-of-checks problem
+- "entry points" (not "system boundaries") — more concrete; "entry point" means where data enters your system
+- "API responses" (not "external APIs") — clarifies it's about validating DATA YOU RECEIVE, not the calls you make
+
+**Devil's advocate:** Does "API responses" include responses from internal services? An agent might be uncertain about what's "internal" vs. "external." Counter: "entry points" already clarifies — it's WHERE data enters, regardless of source. If an agent treats internal service responses as entry points (validating them), that's harmless over-validation rather than dangerous under-validation. Accept.
+
+**Devil's advocate on "No input validation in internal code":** What about a utility function that defensively checks its own arguments? E.g., `def divide(a, b): assert b != 0`. Is that "input validation in internal code"?
+
+Technically yes. But defensive assertions in utility functions are a different pattern from duplicating business-rule validation. An agent is likely to distinguish these in practice. The rule targets the common anti-pattern (re-checking user input deep inside the call stack), not defensive programming basics.
+
+This ambiguity is acceptable; a perfect rule would be overly long. Accept the fix.
+
+---
+
+### I8-2. Cross-rule logical consistency check
+
+Checking all five rules for contradictions:
+
+- Rule 1 ("propose simpler approach") + Rule 2 ("no features beyond asked"): consistent — both promote restraint.
+- Rule 1 ("surface tradeoffs") + Rule 4 ("define success criteria"): consistent — different phases of the same pre-task discipline.
+- Rule 3 ("surgical changes") + Rule 2 ("only validate at entry points"): consistent — Rule 2 governs code structure; Rule 3 governs change scope.
+- Rule 4 ("stop when blocked") + Rule 1 ("ask when unclear"): consistent and complementary — Rule 1 governs pre-task; Rule 4 governs mid-execution blockers.
+- Rule 4 ("progress without constant check-ins") + Rule 5 ("surface before irreversible harm"): consistent — Rule 4 grants autonomy; Rule 5 restricts it at the high-stakes boundary.
+- Rule 5 ("mark inferences") + Rule 1 ("state assumptions explicitly"): slightly overlapping but not contradictory — Rule 1 is about surfacing assumptions before acting; Rule 5 is about marking them in output.
+
+No contradictions found.
+
+---
+
+### I8-3. Rule 2 "stop and verify" check
+
+**Current:** `"...stop and verify whether they're necessary."`
+
+"Verify" is slightly ambiguous (verify with self? with user?). However, given Rule 1 ("if uncertain, ask"), the follow-through is handled. The agent pauses ("stop"), evaluates ("verify"), and if still uncertain, Rule 1 applies. The ambiguity resolves naturally through rule interaction.
+
+No change needed. Marking as closed.
+
+---
+
+### I8-4. Rule 5 first bullet ("Never let confident tone...") placement — final check
+
+"Never let confident tone substitute for confident knowledge" is now first under a conditional trigger ("When your knowledge is incomplete..."). Does it read naturally?
+
+"When X is true: never do Y." This is grammatically and logically clean. The principle fires when the trigger fires. Accept.
+
+---
+
+### I8-5. Document length check
+
+Counting lines added vs. original:
+- Original CLAUDE.md: 66 lines
+- Current CLAUDE.md: 90 lines
+
++24 lines over the original. The additions are: header clarification (4 lines), new trade-offs bullet (1), Rule 2 self-check (1, replacing 1), Rule 4 TDD qualifier + non-TDD clause (2 new), Rule 4 blocked sentence (2, split), Rule 5 structural rewrite (added inference-marking + reordering).
+
+Growth is proportional to the added content. No rule is bloated. The document length is acceptable.
+
+---
+
+## Iteration 8 — Summary of Changes
+
+| # | Location | Change |
+|---|----------|--------|
+| I8-1 | Rule 2 bullet 4 | "No error handling for internal code" → "No input validation in internal code — validate at entry points (user input, API responses) only." |
+
+All other issues closed as non-issues or already resolved.
+
+---
+
+## Decisions Log Addition (Iteration 8)
+
+| Date | Issue | Decision | Rationale |
+|------|-------|----------|-----------|
+| 2026-06-02 | I8-1 (Rule 2 bullet 4) | "No input validation in internal code..." | Previous "No error handling" was too broad; targets the actual anti-pattern (duplicated input checks) |
+| 2026-06-02 | I8-2 (cross-rule consistency) | No contradictions found | All five rules are logically consistent post-iteration |
+| 2026-06-02 | I8-3 (Rule 2 "verify") | No change | Ambiguity resolves via Rule 1 (if uncertain, ask) |
+| 2026-06-02 | I8-5 (length) | No change | +24 lines proportional to added content; no rule is bloated |
+
+---
+
+## Status: CONVERGED
+
+Iteration 8 finds one remaining fix (I8-1) and no logical contradictions.
+After applying I8-1, the document is considered stable.
+
+The refinement produced 8 iterations, ~35 decisions, improving:
+- Logical consistency (removed 3 contradictions, 2 tautologies)
+- Precision (7 vague phrasings tightened)
+- Completeness (Rule 1 trade-offs bullet, Rule 4 non-TDD clause)
+- Structure (Rule 5 principle-first ordering, Rule 2 list pattern)
+- Safety (two-tier precedence protecting Rules 1+5 from silent override)

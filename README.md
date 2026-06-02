@@ -2,8 +2,6 @@
 
 A single `CLAUDE.md` file to improve Claude Code behavior, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
-English | [简体中文](./README.zh.md)
-
 ## The Problems
 
 From Andrej's post:
@@ -126,13 +124,20 @@ LLMs often present inferences and assumptions with the same confident tone as kn
 
 ## Install
 
-**Bootstrap (run once to get the commands)**
+**Option A: Script (recommended)**
 
 ```bash
-mkdir -p ~/.claude/commands && for cmd in karpathy_rules_install_local karpathy_rules_install_repo karpathy_rules_update karpathy_rules_check; do curl -s -o ~/.claude/commands/${cmd}.md https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/.claude/commands/${cmd}.md; done
+curl -s https://raw.githubusercontent.com/lucagattoni/andrej-karpathy-skills/main/install.sh | bash
 ```
 
-This downloads all four commands globally. No restart needed — they're available immediately in Claude Code and Claude Desktop.
+Or if you've cloned the repo:
+
+```bash
+make install
+# or: bash install.sh
+```
+
+This installs four commands into `~/.claude/commands/`. No restart needed — they're available immediately in Claude Code and Claude Desktop.
 
 **Commands**
 
@@ -149,19 +154,7 @@ Both install commands detect existing rules and offer to update them instead of 
 
 Changes to `~/.claude/commands/` take effect immediately — no restart needed (except when creating the directory for the first time).
 
-**Option B: Claude Code Plugin**
-
-From within Claude Code, first add the marketplace:
-```
-/plugin marketplace add lucagattoni/andrej-karpathy-skills
-```
-
-Then install the plugin:
-```
-/plugin install andrej-karpathy-skills@karpathy-skills
-```
-
-**Option C: CLAUDE.md (per-project, manual)**
+**Option B: CLAUDE.md (per-project, manual)**
 
 New project:
 ```bash

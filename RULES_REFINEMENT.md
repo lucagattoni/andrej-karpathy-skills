@@ -211,14 +211,201 @@ Options for B:
 
 ---
 
-## Open Decisions (Awaiting Input)
+## Open Decisions (Resolved)
 
-| # | Decision | Options | Impact |
-|---|----------|---------|--------|
-| D-A | Rule 1 + Rule 5 overlap: merge, scope, or cross-reference? | C1 / C2 / C3 | Structural — affects rule count and doc shape |
-| D-B | Rule 4 test examples: keep/scope TDD examples, or generalize? | K1 / K2 / K3 | Scope — affects how broadly Rule 4 applies |
-| D-C | Header escape hatch: remove "trivial", define it, or replace with scope trigger? | B1 / B2 / B3 | Behavioral — affects how broadly rules are applied |
-| D-D | Header conflict resolution: add precedence or remove the sentence? | A1 / A2 / A3 | Structural — affects how these rules relate to project-specific overrides |
+| # | Decision | Chosen | Date |
+|---|----------|--------|------|
+| D-A | Rule 1 + Rule 5 overlap | C1: scope by phase (Rule 1 = before, Rule 5 = during/after) | 2026-06-02 |
+| D-B | Rule 4 test examples | K1: add "(when tests are applicable)" qualifier | 2026-06-02 |
+| D-C | Header escape hatch | B1: remove "trivial tasks" entirely | 2026-06-02 |
+| D-D | Header conflict resolution | A1: "Project-specific instructions take precedence" | 2026-06-02 |
+
+---
+
+## Iteration 2 — Devil's Advocate on All Chosen Solutions
+
+### DA-1: C1 — Scope Rule 1 vs Rule 5 by phase
+
+**Chosen:** Rule 1 = before coding; Rule 5 = during/after coding.
+
+**Challenge:** "Before" and "during" coding are not crisp phases for an AI agent. Agents reason and generate simultaneously — there is no hard boundary between "planning" and "executing." The phase model is a human cognitive construct.
+
+**Deeper distinction found:** The real difference between the two rules is not temporal but functional:
+- Rule 1 is a **decision gate**: "Should I start, and on what terms?"
+- Rule 5 is a **communication standard**: "How should I word things I'm not sure about?"
+
+These are orthogonal. An agent can ask a clarifying question (Rule 1) AND hedge a claim (Rule 5) at the same moment, without contradiction.
+
+**Revised framing:** Instead of "Rule 1 = pre-coding / Rule 5 = during-coding," scope them as:
+- Rule 1: governs **when to pause and ask** (at any point where a decision would be irreversible without clarity).
+- Rule 5: governs **how to express** uncertain claims in any output (at all times).
+
+This is more precise and doesn't rely on an agent knowing what "phase" it's in.
+
+---
+
+### DA-2: K1 — Add "(when tests are applicable)" to Rule 4
+
+**Chosen:** Keep TDD examples, add qualifier.
+
+**Challenge:** Adding the qualifier without saying what to do instead creates a behavioral gap. The agent reads "when tests are applicable" and has no guidance for the non-TDD case. It may default to no verification behavior at all.
+
+**Required addition:** K1 needs a companion clause covering non-TDD tasks. Proposed:
+> "When tests are not applicable, define an observable done condition before starting: a specific output, state change, or behavior that confirms the task is complete."
+
+This closes the gap. Without it, K1 is an incomplete fix.
+
+---
+
+### DA-3: B1 — Remove "trivial tasks" escape hatch
+
+**Chosen:** Delete the sentence entirely.
+
+**Challenge:** Does removing it break anything? Check each rule at trivial scale:
+- Rule 1 on a typo fix: "check before implementing" — harmless, takes one second.
+- Rule 2 on a typo fix: "minimum code" — trivially satisfied.
+- Rule 3 on a typo fix: "don't touch adjacent code" — trivially satisfied.
+- Rule 4 on a typo fix: "define done condition" — done condition is self-evident.
+- Rule 5 on a typo fix: "signal uncertainty" — no uncertainty exists in a typo fix.
+
+**Verdict:** B1 is safe. The rules are lightweight enough that applying them to trivial tasks causes no friction. Removing the escape hatch is correct.
+
+---
+
+### DA-4: A1 — "Project-specific instructions take precedence"
+
+**Chosen:** Project-specific wins on conflict.
+
+**Challenge:** A1 allows a project instruction to accidentally nullify safety rules. Examples:
+- `"Always respond with confidence"` would override Rule 5 (signal uncertainty).
+- `"Never ask clarifying questions"` would override Rule 1 (pause and ask).
+- `"Be as helpful as possible and do what you're asked"` could override Rule 3 (surgical changes).
+
+Rules 1 and 5 in particular govern **reasoning and communication integrity**, not just implementation style. Overriding them silently is qualitatively different from overriding "use tabs not spaces."
+
+**Proposed safeguard:** Split the precedence statement into two tiers:
+> "Project-specific instructions take precedence on implementation choices (libraries, patterns, style). Rules 1, 3, 4, and 5 govern baseline reasoning and communication behaviors and apply unless explicitly and intentionally overridden."
+
+This makes any override visible and deliberate. However, this adds complexity. Flagging as **new open decision D-E**.
+
+---
+
+### DA-5: D2 — "Only validate at system boundaries"
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** D2 changes the scope of the rule: the original was "avoid impossible error handling," D2 is "where to put validation." These are related but not identical — D2 is a stronger, more prescriptive statement.
+
+**Counter-consideration:** D2 is actually the correct engineering principle and more useful to an agent than "don't handle impossible scenarios" (which requires the agent to judge impossibility). D2 gives a concrete structural rule: external boundary = validate; internal = trust.
+
+**Verdict:** D2 is the better choice, accept it. The scope change is an improvement.
+
+---
+
+### DA-6: E1 — Remove 200/50 compression line
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** Removing it loses the signal that compression is expected, not optional. The principle is stated in the header ("Minimum code that solves the problem") but not repeated in the body.
+
+**Counter-consideration:** The header principle IS sufficient. The 200/50 line adds noise (arbitrary numbers) without adding precision. E1 is the cleaner choice.
+
+**Verdict:** E1. Remove the line. The header already covers it.
+
+---
+
+### DA-7: F2 — Replace "senior engineer" self-check with observable criteria
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** F2's original phrasing was: "If the solution introduces new abstractions, new files, or new dependencies not implied by the task, reconsider." The phrase "not implied by the task" still requires judgment. This is slightly better than F1 (remove entirely) but not fully objective.
+
+**Refinement:** Make F2 tighter — remove the subjective qualifier:
+> "If the solution introduces abstractions, new files, or new dependencies not explicitly requested, reconsider."
+
+"Explicitly requested" is more objective than "implied by the task." An agent can check: was this dependency in the original request? Yes/no.
+
+**Verdict:** F2 with tightened phrasing.
+
+---
+
+### DA-8: H1 — Fix Rule 3 test to allow side-effect cleanup
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** H1's "cleanup required by your changes" is still broad. Could an agent claim any adjacent "improvement" is "required" by their change?
+
+**Refinement:** Make side-effect cleanup concrete by example:
+> "Every changed line should trace to the user's request, or be a direct side effect of your changes (e.g., an import your changes made unused)."
+
+The parenthetical constrains "direct side effect" to a specific, unambiguous category.
+
+**Verdict:** H1 with the example added.
+
+---
+
+### DA-9: J2 — Reframe Rule 4 "loop" as done-condition + stop-when-blocked
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** J2 ("Define a done condition before starting. Stop when done or blocked.") removes the iterative character but fixes the infinite-loop risk. "Blocked" needs definition or it becomes another vague escape.
+
+**Refinement:** Define "blocked" explicitly:
+> "Define a done condition before starting. Proceed until done. Stop and report if you cannot proceed without a decision or information you don't have."
+
+This makes "blocked" a specific state: missing information or a pending decision, not "this is hard."
+
+**Verdict:** J2 with blocked defined.
+
+---
+
+### DA-10: L1 — Replace "loop independently" in Rule 4
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** L1 ("proceed to the next step") weakens the original useful point: clear criteria enable autonomy. We want to preserve that.
+
+**Revised option:** Replace with: "Well-defined success criteria enable progress without constant check-ins." This preserves the intent (autonomy is earned by precision) without the "loop independently" phrasing that conflicts with Rules 1+5.
+
+**Verdict:** L1 with revised phrasing.
+
+---
+
+### DA-11: N2 — Hedge the specific claim (Rule 5 "preface" fix)
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** N2's vocabulary list ("possibly", "likely", "I'm not certain", "you should verify this") is useful but could lead to formulaic output. The agent might rotate through these words mechanically without genuine epistemic reflection.
+
+**Counter-consideration:** The list is a floor, not a ceiling. It prevents the agent from using weaker hedges ("maybe", "perhaps") that are easy to dismiss. The risk of mechanical rotation is lower than the risk of under-hedging. N2 is correct.
+
+**Verdict:** N2. Accept the vocabulary list.
+
+---
+
+### DA-12: P2 — Closing summary replacement
+
+**Status:** Proposed autonomously, not yet decided.
+
+**Challenge:** My proposed P2 summary ("changes are minimal, targeted, and honest about their limits") misses Rule 4 (goal-driven execution, defined success criteria).
+
+**Revised:** "These guidelines are working if: changes are minimal and targeted, success criteria are defined before coding starts, and uncertainty is named rather than hidden."
+
+Mapping:
+- "minimal" → Rule 2 (Simplicity First)
+- "targeted" → Rule 3 (Surgical Changes)
+- "success criteria defined before coding" → Rule 4 (Goal-Driven Execution) + Rule 1 (Think Before Coding)
+- "uncertainty is named" → Rule 5 (Signal Uncertainty) + Rule 1 (Think Before Coding)
+
+All five rules are covered. Use this revised version.
+
+---
+
+## New Open Decision from Iteration 2
+
+| # | Decision | Context | Options |
+|---|----------|---------|---------|
+| D-E | A1 safeguard: should Rules 1+5 be protectable from project-specific override? | A1 could allow a project to accidentally disable uncertainty-signalling or ask-before-acting behaviors | **E-opt1:** Two-tier precedence (project wins on implementation, Rules 1/5 survive by default). **E-opt2:** Accept A1 as-is; assume project overrides are intentional. |
 
 ---
 
@@ -226,15 +413,27 @@ Options for B:
 
 | Date | Issue | Decision | Rationale |
 |------|-------|----------|-----------|
-| 2026-06-02 | I4-C (Rule 3 informal language) | G1: replace "mess" with "what your changes introduced" | Neutral, precise, no information loss |
+| 2026-06-02 | I4-A (Rule 3 informal language) | G1: replace "mess" → "what your changes introduced" | Neutral, precise, no information loss |
 | 2026-06-02 | I4-C (Rule 3 "YOUR" caps) | I1: lowercase | Style consistency; caps add no precision |
 | 2026-06-02 | I6-A (Rule 5 grammar) | M1: "a claim is inferred rather than verified" | Fixes grammar, preserves intent |
 | 2026-06-02 | I7-B (pronoun consistency) | Q2: add "In these rules, 'you' refers to the AI agent" | Minimal-change fix; avoids pervasive rewrite |
+| 2026-06-02 | D-A (Rule 1/5 overlap) | C1 revised: scope as decision-gate vs. communication standard, not as phases | Phase framing is imprecise for AI; functional distinction is sharper |
+| 2026-06-02 | D-B (Rule 4 TDD) | K1 + extension: add "(when tests applicable)" + non-TDD done-condition clause | K1 alone leaves a behavioral gap |
+| 2026-06-02 | D-C (escape hatch) | B1: remove entirely | Rules scale down safely; no escape hatch needed |
+| 2026-06-02 | D-D (conflict precedence) | A1 with safeguard TBD (see D-E) | Baseline reasoning behaviors may need protection |
+| 2026-06-02 | I3-A (Rule 2 "impossible") | D2: "Only validate at system boundaries" | More precise, actionable, and correct engineering principle |
+| 2026-06-02 | I3-B (Rule 2 200/50) | E1: remove the line | Principle already in header; arbitrary numbers add noise |
+| 2026-06-02 | I3-C (Rule 2 self-check) | F2 tightened: "not explicitly requested" | Observable, binary; tighter than "implied by task" |
+| 2026-06-02 | I4-B (Rule 3 test contradiction) | H1 + example: "direct side effect (e.g., import made unused)" | Concrete example constrains overuse |
+| 2026-06-02 | I5-A (Rule 4 "loop") | J2 refined: "stop if you can't proceed without information or a decision" | Defines "blocked" precisely |
+| 2026-06-02 | I5-C (Rule 4 autonomy) | L1 revised: "Well-defined criteria enable progress without constant check-ins" | Preserves the intent; removes conflict with Rules 1+5 |
+| 2026-06-02 | I6-B (Rule 5 "preface") | N2: "Hedge the specific claim" | Scopes hedging to the claim, not the whole response |
+| 2026-06-02 | I6-C (Rule 5 example) | O1: add "(for example)" | Prevents verbatim repetition |
+| 2026-06-02 | I7-A (closing summary) | P2 revised: covers all 5 rules in one sentence | Original missed Rules 3 and 5 |
 
 ---
 
 ## Pending Iterations
 
-- **Iteration 2:** Devil's advocate review of the solutions proposed in Iteration 1.
-- **Iteration 3:** Convergence — finalize recommendations per issue; update Decisions Log.
-- **Iteration 4:** Final consistency pass — check that proposed changes don't introduce new contradictions.
+- **Iteration 3:** Resolve D-E (A1 safeguard), then produce the full set of exact proposed text changes for CLAUDE.md.
+- **Iteration 4:** Final devil's advocate consistency pass — verify no new contradictions introduced by the combined changes.

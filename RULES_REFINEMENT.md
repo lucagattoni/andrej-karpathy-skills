@@ -642,6 +642,116 @@ When you notice you're filling a gap with an assumption:
 
 ---
 
-## Pending Iterations
+## Iteration 4 — Final Consistency Pass
 
-- **Iteration 4:** Final devil's advocate consistency pass — verify the combined proposed changes introduce no new contradictions, edge cases, or rule conflicts.
+Reading the proposed changes as a complete document, checking for new contradictions, unintended interactions, and residual issues.
+
+---
+
+### F4-1: Em-dash normalization in Rule 1 — REJECT
+
+In the Iteration 3 proposal for Rule 1, I changed bullet separator style from ` - ` to ` — ` "for consistency." This is a mistake.
+
+- The existing document uses ` - ` in list items throughout.
+- Rule 3 ("Surgical Changes") itself says: "Match existing style, even if you'd do it differently."
+- Applying Rule 3 to CLAUDE.md means: don't change the dash style in bullets that aren't being changed for other reasons.
+
+**Correction:** Revert all ` — ` changes in Rule 1 bullets back to ` - `. Only the em-dash in the new scope line ("Before implementing — and at any point...") is intentional content, not a style change.
+
+---
+
+### F4-2: "Intentionally" in two-tier precedence — REMOVE
+
+Proposed text: "...apply unless explicitly and intentionally overridden."
+
+An AI agent cannot assess whether a project instruction was "intentionally" written to override a baseline behavior. The word adds no machine-actionable information. "Explicitly" already implies deliberateness.
+
+**Correction:** "...apply unless explicitly overridden."
+
+---
+
+### F4-3: Rule 4 "blocked" sentence — potential redundancy with Rule 1
+
+Proposed addition at end of Rule 4: "If you cannot proceed without information or a decision you don't have, stop and report rather than guessing."
+
+This echoes Rule 1 ("If something is unclear, stop. Name what's confusing. Ask.") and Rule 5 ("Offer to stop rather than guess."). Is it redundant?
+
+**Assessment:** It is slightly redundant, but the context justifies it. Rule 4's "blocked" sentence is specifically about execution-time blockers (mid-task), while Rule 1 is about pre-task clarity and Rule 5 is about communication style. The three are distinct enough to coexist. Redundancy here is intentional reinforcement, not a conflict. **Accept as-is.**
+
+---
+
+### F4-4: Rule 2 F2 "not explicitly requested" — edge case
+
+Proposed: "If the solution introduces abstractions, new files, or new dependencies not explicitly requested, reconsider."
+
+Edge case: a task says "add logging" — clearly a logging library is implied, but not explicitly named. "Not explicitly requested" would flag this. Would an agent reconsider adding a standard logging library?
+
+**Assessment:** Yes — and that is the correct behavior. The agent should either confirm the library choice or pick the one already in use. "Reconsider" doesn't mean "don't do it"; it means "pause and verify." For an AI agent this is exactly right: when in doubt, surface the decision rather than silently picking. **Accept as-is.**
+
+---
+
+### F4-5: Rule 5 scope vs. Rule 1 scope — check after C1-revised
+
+C1-revised defined: Rule 1 = decision gate (when to pause and ask); Rule 5 = communication standard (how to word uncertain claims).
+
+Checking the proposed Rule 5 text: "Offer to stop rather than guess" — this sounds like a decision gate, which is Rule 1 territory.
+
+**Assessment:** The distinction is subtle but holds. Rule 1's gate is about starting/continuing the task. Rule 5's "offer to stop" is about the content of a specific uncertain claim — it's about how to communicate that claim, not about whether to proceed with the task. Context: Rule 5's "stop" is embedded in an explanation like "I'm assuming X; I can proceed on that assumption, or you can verify first." That's a communication act, not a task pause. **No conflict.**
+
+---
+
+### F4-6: Closing summary coverage — recheck
+
+Proposed: "changes are minimal and targeted, success criteria are defined before coding starts, and uncertainty is named rather than hidden."
+
+- Rule 1 (Think Before Coding): "success criteria defined before coding starts" + "uncertainty named" ✓
+- Rule 2 (Simplicity First): "minimal" ✓
+- Rule 3 (Surgical Changes): "targeted" ✓
+- Rule 4 (Goal-Driven): "success criteria defined before coding starts" ✓
+- Rule 5 (Signal Uncertainty): "uncertainty is named rather than hidden" ✓
+
+**All five covered. Accept.**
+
+---
+
+### F4-7: Header two-tier precedence — full text recheck
+
+Proposed: "Project-specific instructions take precedence on implementation choices (libraries, patterns, style). The reasoning and communication behaviors in these rules — asking before acting, signalling uncertainty — are baselines that apply unless explicitly overridden."
+
+**Checks:**
+- Does "asking before acting" accurately describe Rules 1 and 4? Rule 1 yes; Rule 4 is about defining criteria, not asking. Slightly misleading.
+- Does "signalling uncertainty" accurately describe Rule 5? Yes.
+
+**Refined:** "The behaviors governing reasoning integrity — clarifying before acting (Rule 1) and signalling uncertainty (Rule 5) — are baselines that apply unless explicitly overridden."
+
+This is more precise: names the specific behaviors and which rules own them.
+
+---
+
+## Summary of Iteration 4 Corrections
+
+| # | Location | Issue | Fix |
+|---|----------|-------|-----|
+| F4-1 | Rule 1 bullets | Em-dash style change violates Rule 3 (match existing style) | Revert ` — ` → ` - ` in all unchanged bullets |
+| F4-2 | Header precedence | "intentionally" unverifiable by agent | Remove; keep "explicitly" |
+| F4-7 | Header precedence | "asking before acting" slightly misrepresents Rule 4 | Rephrase to "clarifying before acting (Rule 1) and signalling uncertainty (Rule 5)" |
+
+No new contradictions found between the combined proposed changes and the existing rules. The rule set is consistent.
+
+---
+
+## Final Decisions Log Addition
+
+| Date | Issue | Decision | Rationale |
+|------|-------|----------|-----------|
+| 2026-06-02 | D-E (A1 safeguard) | Two-tier precedence adopted | Prevents silent override of trust/safety behaviors |
+| 2026-06-02 | F4-1 (Rule 1 dashes) | Revert style change | Violates Rule 3's own "match existing style" |
+| 2026-06-02 | F4-2 (header "intentionally") | Remove "intentionally" | Unverifiable by agent; "explicitly" already sufficient |
+| 2026-06-02 | F4-7 (header "asking before acting") | Rephrase to name Rule 1 and Rule 5 explicitly | More precise; avoids ambiguous summary phrase |
+
+---
+
+## Status: PLAN COMPLETE
+
+All four iterations complete. The full set of changes is specified above with all corrections applied.
+Pending: application of changes to CLAUDE.md.

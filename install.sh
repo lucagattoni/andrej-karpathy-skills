@@ -11,7 +11,7 @@ COMMANDS=(
   karpathy_rules_check
 )
 
-echo "Installing Karpathy Claude Code commands..."
+echo "Installing Claude Code commands for Karpathy's rules..."
 mkdir -p "${COMMANDS_DIR}"
 
 for cmd in "${COMMANDS[@]}"; do

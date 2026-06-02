@@ -16,13 +16,21 @@ cat ~/.claude/CLAUDE.md 2>/dev/null
 
 If the file contains "Behavioral guidelines to reduce common LLM coding mistakes", the Karpathy rules are already installed. Ask the user: "Karpathy rules are already installed globally. Update to the latest version?" If yes, replace the Karpathy block (everything from the first line of the file to the first `---` separator, or the whole file if no separator exists) with the incoming rules, preserving any content below the separator. Then skip to Step 4.
 
-## Step 3 — Install the rules
+## Step 3 — Back up the existing file
+
+If `~/.claude/CLAUDE.md` exists, create a backup before modifying it:
+
+```bash
+[ -f ~/.claude/CLAUDE.md ] && cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE-$(date +%Y%m%d).md.bkp
+```
+
+## Step 4 — Install the rules
 
 **~/.claude/CLAUDE.md does not exist:** write the incoming rules as the file.
 
 **File exists with no Karpathy rules:** prepend the incoming rules at the top, add a blank line, then the existing content below.
 
-## Step 4 — Install all four commands globally
+## Step 5 — Install all four commands globally
 
 ```bash
 mkdir -p ~/.claude/commands
@@ -34,7 +42,7 @@ curl -s -o ~/.claude/commands/karpathy_rules_check.md https://raw.githubusercont
 
 Verify each curl exited with code 0. Report success or failure per file.
 
-## Step 5 — Offer a code review
+## Step 6 — Offer a code review
 
 Check whether the current directory is a git repo with tracked files:
 

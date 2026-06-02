@@ -16,7 +16,15 @@ cat ./CLAUDE.md 2>/dev/null
 
 If the file contains "Behavioral guidelines to reduce common LLM coding mistakes", the Karpathy rules are already installed in this project. Ask the user: "Karpathy rules are already installed in this project. Update to the latest version?" If yes, replace the Karpathy block (everything from the first line of the file to the first `---` separator, or the whole file if no separator exists) with the incoming rules, preserving any content below the separator. Then skip to Step 4.
 
-## Step 3 — Install the rules
+## Step 3 — Back up the existing file
+
+If `./CLAUDE.md` exists, create a backup before modifying it:
+
+```bash
+[ -f ./CLAUDE.md ] && cp ./CLAUDE.md ./CLAUDE-$(date +%Y%m%d).md.bkp
+```
+
+## Step 4 — Install the rules
 
 **No CLAUDE.md exists:** write the incoming rules as CLAUDE.md.
 
@@ -24,7 +32,7 @@ If the file contains "Behavioral guidelines to reduce common LLM coding mistakes
 
 If there are existing rules that conflict with, duplicate, or are superseded by the incoming rules: remove or consolidate them, preserve all project-specific sections, and report what changed and why.
 
-## Step 4 — Install all four commands in the project
+## Step 5 — Install all four commands in the project
 
 ```bash
 mkdir -p .claude/commands
@@ -36,7 +44,7 @@ curl -s -o .claude/commands/karpathy_rules_check.md https://raw.githubuserconten
 
 Verify each curl exited with code 0. Report success or failure per file.
 
-## Step 5 — Offer a code review
+## Step 6 — Offer a code review
 
 Check whether the project already has tracked files:
 

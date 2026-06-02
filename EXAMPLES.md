@@ -495,8 +495,6 @@ def sort_scores(scores):
 
 ---
 
----
-
 ## 5. Signal Uncertainty
 
 ### Example 1: Inference Stated as Fact

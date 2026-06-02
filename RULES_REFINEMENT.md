@@ -751,7 +751,125 @@ No new contradictions found between the combined proposed changes and the existi
 
 ---
 
-## Status: PLAN COMPLETE
+## Status: CHANGES APPLIED (post-Iterations 1–4)
 
-All four iterations complete. The full set of changes is specified above with all corrections applied.
-Pending: application of changes to CLAUDE.md.
+All four iterations complete and applied to CLAUDE.md.
+Refinement continues below on the resulting document.
+
+---
+
+## Iteration 5 — Pass on the Applied Document
+
+Reading CLAUDE.md as applied. Fresh pass, no assumptions carried from earlier analysis.
+
+---
+
+### I5-1. Rule 5 trigger condition — partial redundancy, imprecise third case
+
+**Current:** `"When your knowledge is incomplete, a claim is inferred rather than verified, or the answer is unverified:"`
+
+Three conditions are listed. Checking distinctness:
+- "knowledge is incomplete" = you lack data
+- "a claim is inferred rather than verified" = you're extrapolating from what you have
+- "the answer is unverified" = you found/looked something up but haven't confirmed it's accurate
+
+The third condition IS distinct from the first two (e.g., citing a library version, referencing API behavior). But "the answer is unverified" is passive and imprecise — it doesn't say who verifies it or what kind of verification is needed.
+
+**Devil's advocate on removing it:** If removed, cases like "I looked up a version number but it might be outdated" lose explicit coverage. That's a real, common AI failure mode. Keep the condition, improve the phrasing.
+
+**Proposed fix:** `"or a fact needs external verification"` — more precise, implies the agent can't self-verify it.
+
+**Full revised line:** `"When your knowledge is incomplete, a claim is inferred rather than known, or a fact needs external verification:"`
+
+Note: also changed "rather than verified" → "rather than known" — an inference is not just unverified, it's a different epistemic category (guessed vs. known). "Rather than known" is the sharper contrast.
+
+---
+
+### I5-2. Rule 4 closing paragraph — behavioral imperative buried in descriptive sentences
+
+**Current (one paragraph):**
+> Well-defined success criteria enable progress without constant check-ins. Weak criteria ("make it work") require constant clarification. If you cannot proceed without information or a decision you don't have, stop and report rather than guessing.
+
+The first two sentences are descriptive (observations about criteria quality). The third is a behavioral imperative (a direct instruction). Mixed mode in a single paragraph causes the imperative to land softly — it reads like another observation rather than a rule.
+
+**Devil's advocate on keeping it merged:** The logical flow is: good criteria → proceed; bad criteria → ask for clarification; truly blocked → stop. Reading them together makes the progression clear.
+
+**Counter:** The progression is already clear from the sentence sequence. A blank line between sentence 2 and sentence 3 separates modes without losing the flow.
+
+**Proposed fix:** Split with a blank line after "constant clarification."
+
+---
+
+### I5-3. Header — rule numbers in precedence clause create coupling
+
+**Current:** `"The behaviors governing reasoning integrity — clarifying before acting (Rule 1) and signalling uncertainty (Rule 5) — are baselines that apply unless explicitly overridden."`
+
+Naming rule numbers in the header creates coupling: if rules are reordered, merged, or renumbered, the header is silently stale. The rule number references also implicitly suggest Rules 2, 3, and 4 are not baselines — which may or may not be the intent.
+
+**Devil's advocate on keeping rule numbers:** They make the cross-reference unambiguous — a reader knows exactly which rules are protected. Without them, "clarifying before acting and signalling uncertainty" must be matched to rules by understanding, not reference.
+
+**Counter:** The behaviors ARE the reference. If the reader understands the behaviors, the numbers add nothing. If they don't understand the behaviors, the numbers don't help. Remove them.
+
+**Proposed fix:** `"Reasoning and communication behaviors — clarifying before acting and signalling uncertainty — apply unless explicitly overridden."`
+
+Also: "governing reasoning integrity" is legalistic. "Reasoning and communication behaviors" is plainer and more accurate (Rule 1 is about reasoning; Rule 5 is about communication).
+
+---
+
+### I5-4. Rule 1 — "costly to undo" scope check
+
+**Current:** `"Before implementing - and at any point where proceeding would be costly to undo:"`
+
+Does "costly" cover irreversible actions (API calls, pushes, db writes)? Arguably yes: impossible to undo = infinitely costly. "Costly" is broad enough to cover the spectrum.
+
+**Verdict:** No change needed. This is not an issue.
+
+---
+
+### I5-5. Rule 2 — "reconsider" operationality check
+
+**Current:** `"If the solution introduces abstractions, new files, or new dependencies not explicitly requested, reconsider."`
+
+"Reconsider" doesn't specify what to do after reconsidering. However, Rule 1 already covers this: if uncertain after reconsidering, ask. The rule is purposely left open-ended — the follow-through is handled by Rule 1. No change needed.
+
+**Devil's advocate:** An agent might "reconsider" and then proceed anyway. The word needs a direction.
+
+**Counter:** "reconsider whether they're necessary before proceeding" adds "before proceeding" which implies the check is blocking. Testing this: `"...reconsider whether they're necessary."` — still open. `"...stop and verify whether they're necessary."` — this is more directive.
+
+**Decision:** Change "reconsider" to "stop and verify whether they're necessary." This makes the action unambiguous without over-prescribing what "verify" looks like (could be self-reasoning, could be asking the user).
+
+---
+
+### I5-6. Rule 3 test — example repetition
+
+The test example ("an import your changes made unused") repeats the bullet above it verbatim. This is a minor readability issue. The example in the test exists to anchor "direct side effect" — it's useful. The repetition is intentional. No change.
+
+---
+
+## Iteration 5 — Summary of Changes
+
+| # | Location | Change |
+|---|----------|--------|
+| I5-1 | Rule 5 trigger | Rephrase: "a claim is inferred rather than known, or a fact needs external verification" |
+| I5-2 | Rule 4 closing paragraph | Add blank line before the behavioral imperative |
+| I5-3 | Header precedence | Remove rule numbers; replace "governing reasoning integrity" with plainer phrasing |
+| I5-5 | Rule 2 self-check | "reconsider" → "stop and verify whether they're necessary" |
+
+---
+
+## Decisions Log Addition (Iteration 5)
+
+| Date | Issue | Decision | Rationale |
+|------|-------|----------|-----------|
+| 2026-06-02 | I5-1 (Rule 5 trigger) | Rephrase third condition to "a fact needs external verification"; "inferred rather than known" | Three conditions are distinct; third was passive and imprecise |
+| 2026-06-02 | I5-2 (Rule 4 para) | Blank line before behavioral imperative | Separates descriptive from prescriptive without losing logical flow |
+| 2026-06-02 | I5-3 (Header rule numbers) | Remove rule number references | Coupling risk; behavior names are self-sufficient |
+| 2026-06-02 | I5-4 (Rule 1 "costly") | No change | "costly" covers the full spectrum including irreversible |
+| 2026-06-02 | I5-5 (Rule 2 "reconsider") | "reconsider" → "stop and verify whether they're necessary" | Makes action unambiguous |
+| 2026-06-02 | I5-6 (Rule 3 test repetition) | No change | Intentional anchoring of "direct side effect" |
+
+---
+
+## Pending Iterations
+
+- **Iteration 6:** Apply Iteration 5 changes to CLAUDE.md, then do a final devil's advocate pass on the result.

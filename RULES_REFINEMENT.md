@@ -980,6 +980,115 @@ Decision: They address different aspects: vocabulary (hedge words) vs. structure
 
 ---
 
+## Iteration 7 — Pass on Post-Iteration-6 Document
+
+---
+
+### I7-1. Rule 5 first section — bullet ordering puts abstract principle between concrete behaviors
+
+**Current order:**
+1. Hedge the specific claim (concrete vocabulary)
+2. Mark inference structure (concrete format)
+3. Never let confident tone substitute for knowledge (abstract principle)
+4. If acting on high-stakes uncertainty, escalate (special case)
+
+The abstract principle sits between two concrete behaviors and before the special case. Structurally, a principle should precede the behaviors it governs — readers understand the WHAT better once they understand the WHY.
+
+**Proposed order:**
+1. Never let confident tone substitute for confident knowledge (principle)
+2. Hedge the specific claim (concrete vocabulary)
+3. Mark inference structure (concrete format)
+4. If acting on high-stakes uncertainty, escalate (special case)
+
+**Devil's advocate:** Does "Never let confident tone substitute..." fit naturally as the first thing under the trigger "When your knowledge is incomplete..."? Yes — the trigger describes the scenario; the principle states the core rule; the subsequent bullets are implementations of it.
+
+**Decision:** Reorder. Principle first, then concrete behaviors, then special case.
+
+---
+
+### I7-2. Rule 2 — bullet 4 breaks the "No X" pattern of the surrounding bullets
+
+**Current bullets:**
+1. No features beyond what was asked.
+2. No abstractions for single-use code.
+3. No "flexibility" or "configurability" that wasn't requested.
+4. Only validate at system boundaries (user input, external APIs). Trust internal code and framework contracts.
+
+Bullets 1–3 all follow a "No X" prohibition pattern. Bullet 4 is a compound affirmative sentence that breaks the pattern. In a list, inconsistent structure draws attention to the wrong thing and makes scanning harder.
+
+**Proposed fix:** Rewrite as prohibition form:
+`"No error handling for internal code — only validate at system boundaries (user input, external APIs)."`
+
+- Matches the "No X" pattern
+- Preserves the content (no internal validation, validate at boundaries)
+- Removes the second compound sentence ("Trust internal code...") by making it implicit in "only at boundaries"
+- Cleaner; one idea per bullet
+
+**Devil's advocate:** Removing "Trust internal code and framework contracts" loses an explicit instruction to trust internal guarantees. Counter: "only validate at system boundaries" already implies that everything else should be trusted — if you only check at the boundary, you're implicitly trusting the interior. The explicit "Trust..." sentence is redundant once you say "only."
+
+---
+
+### I7-3. "trade-offs" vs "tradeoffs" — spelling inconsistency
+
+**Current in bold header (Rule 1, original text):** `"Surface tradeoffs."` (one word, no hyphen)
+**Current in new bullet:** `"different trade-offs"` (hyphenated)
+
+Rule 3 says "match existing style." The original document's style is "tradeoffs" (unhyphenated). The new bullet introduced a different spelling.
+
+**Proposed fix:** Change `"trade-offs"` in the new bullet to `"tradeoffs"`.
+
+---
+
+### I7-4. Rule 5 — two-section structure validity check
+
+**Section 1 trigger:** "When your knowledge is incomplete, a claim is inferred rather than known, or a fact needs external verification:"
+**Section 2 trigger:** "When you notice you're filling a gap with an assumption:"
+
+Section 2 is a subset of Section 1 (filling a gap with an assumption IS a form of incomplete knowledge). Why keep them separate?
+
+Section 1 covers: HOW TO EXPRESS uncertain claims (hedging, marking structure, tone, escalation).
+Section 2 covers: HOW TO BEHAVE when proceeding on assumptions (name the gap, offer to stop, don't bury it).
+
+These are genuinely different behavioral modes:
+- Section 1: you have something to say; how do you say it?
+- Section 2: you're about to proceed on uncertain ground; what do you do?
+
+The two-section structure is justified. No change.
+
+---
+
+### I7-5. Convergence check — are issues becoming cosmetic?
+
+Issues found in Iterations 5–7:
+- Iteration 5: 4 issues (2 substantive, 2 non-issues)
+- Iteration 6: 4 issues (all substantive)
+- Iteration 7: 3 issues (2 structural — bullet order, list pattern — and 1 cosmetic — spelling)
+
+The remaining issues are structural-cosmetic rather than logical. The document is converging. After applying Iteration 7 changes, one more pass to confirm no new issues.
+
+---
+
+## Iteration 7 — Summary of Changes
+
+| # | Location | Change |
+|---|----------|--------|
+| I7-1 | Rule 5 section 1 bullets | Reorder: principle first, concrete behaviors, special case last |
+| I7-2 | Rule 2 bullet 4 | Rewrite to "No X" form: "No error handling for internal code — only validate at system boundaries" |
+| I7-3 | Rule 1 new bullet | "trade-offs" → "tradeoffs" |
+
+---
+
+## Decisions Log Addition (Iteration 7)
+
+| Date | Issue | Decision | Rationale |
+|------|-------|----------|-----------|
+| 2026-06-02 | I7-1 (Rule 5 bullet order) | Move principle to first position | Principle before behaviors = clearer logical structure |
+| 2026-06-02 | I7-2 (Rule 2 bullet pattern) | Rewrite as "No error handling for internal code..." | Matches "No X" pattern of other bullets; removes redundant "Trust..." sentence |
+| 2026-06-02 | I7-3 (trade-offs spelling) | "trade-offs" → "tradeoffs" | Match original document style (Rule 3: match existing style) |
+| 2026-06-02 | I7-4 (Rule 5 two sections) | No change | Two sections cover distinct behavioral modes; structure is correct |
+
+---
+
 ## Pending Iterations
 
-- **Iteration 7:** Apply Iteration 6 changes to CLAUDE.md, then do a final devil's advocate pass.
+- **Iteration 8:** Apply Iteration 7 changes to CLAUDE.md. If no new logical issues found, declare convergence.
